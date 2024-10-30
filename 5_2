@@ -1,0 +1,87 @@
+using System;
+
+class MyList<T>
+{
+    private T[] array;
+    private int count;
+
+    // Свойство для получения общего количества элементов
+    public int Count => count;
+
+    // Конструктор по умолчанию
+    public MyList()
+    {
+        array = new T[4]; // Начальный размер массива
+        count = 0;
+    }
+
+    // Метод для добавления элемента
+    public void Add(T item)
+    {
+        if (count == array.Length)
+        {
+            // Увеличиваем размер массива в два раза, если достигнут предел
+            Array.Resize(ref array, array.Length * 2);
+        }
+        array[count] = item;
+        count++;
+    }
+
+    // Индексатор для получения и установки значения элемента по индексу
+    public T this[int index]
+    {
+        get
+        {
+            if (index < 0 || index >= count)
+            {
+                throw new IndexOutOfRangeException("Индекс выходит за пределы списка.");
+            }
+            return array[index];
+        }
+        set
+        {
+            if (index < 0 || index >= count)
+            {
+                throw new IndexOutOfRangeException("Индекс выходит за пределы списка.");
+            }
+            array[index] = value;
+        }
+    }
+
+    // Поддержка инициализатора коллекции
+    public void AddRange(IEnumerable<T> collection)
+    {
+        foreach (var item in collection)
+        {
+            Add(item);
+        }
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Пример использования MyList<T>
+        MyList<int> myList = new MyList<int>
+        {
+            1, 2, 3, 4, 5
+        };
+
+        // Добавление элемента
+        myList.Add(6);
+
+        // Вывод элементов списка
+        for (int i = 0; i < myList.Count; i++)
+        {
+            Console.WriteLine(myList[i]);
+        }
+
+        // Изменение элемента по индексу
+        myList[0] = 10;
+        Console.WriteLine("Первый элемент после изменения: " + myList[0]);
+
+        // Получение количества элементов
+        Console.WriteLine("Количество элементов: " + myList.Count);
+    }
+}
