@@ -1,33 +1,25 @@
 using System;
-
-class MyList<T>
+using System.Collections;
+using System.Collections.Generic;
+class MyList<T> : IEnumerable<T>
 {
     private T[] array;
     private int count;
-
-    // Свойство для получения общего количества элементов
     public int Count => count;
-
-    // Конструктор по умолчанию
     public MyList()
     {
-        array = new T[4]; // Начальный размер массива
+        array = new T[4];
         count = 0;
     }
-
-    // Метод для добавления элемента
     public void Add(T item)
     {
         if (count == array.Length)
         {
-            // Увеличиваем размер массива в два раза, если достигнут предел
             Array.Resize(ref array, array.Length * 2);
         }
         array[count] = item;
         count++;
     }
-
-    // Индексатор для получения и установки значения элемента по индексу
     public T this[int index]
     {
         get
@@ -47,41 +39,40 @@ class MyList<T>
             array[index] = value;
         }
     }
-
-    // Поддержка инициализатора коллекции
-    public void AddRange(IEnumerable<T> collection)
+    public void AddRange(IEnumerable<T> items)
     {
-        foreach (var item in collection)
+        foreach (var item in items)
         {
             Add(item);
         }
     }
+    public IEnumerator<T> GetEnumerator()
+    {
+        for (int i = 0; i < count; i++)
+        {
+            yield return array[i];
+        }
+    }
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
 }
-
 class Program
 {
-    static void Main(string[] args)
+    static void Main()
     {
-        // Пример использования MyList<T>
         MyList<int> myList = new MyList<int>
         {
             1, 2, 3, 4, 5
         };
-
-        // Добавление элемента
         myList.Add(6);
-
-        // Вывод элементов списка
-        for (int i = 0; i < myList.Count; i++)
+        foreach (var item in myList)
         {
-            Console.WriteLine(myList[i]);
+            Console.WriteLine(item);
         }
-
-        // Изменение элемента по индексу
-        myList[0] = 10;
+        myList[0] = 200;
         Console.WriteLine("Первый элемент после изменения: " + myList[0]);
-
-        // Получение количества элементов
-        Console.WriteLine("Количество элементов: " + myList.Count);
+        Console.WriteLine("Общее количество элементов: " + myList.Count);
     }
 }
